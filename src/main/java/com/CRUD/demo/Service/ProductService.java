@@ -1,6 +1,8 @@
 package com.CRUD.demo.Service;
 
 import com.CRUD.demo.Model.Product;
+import com.CRUD.demo.Repository.ProductRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -11,34 +13,32 @@ import java.util.List;
 
 @Service
 public class ProductService {
-    List<Product> products = new ArrayList<>( Arrays.asList(
-            new Product(101, "Samsung", 40000),
-            new Product(102, "Oppo", 10000),
-            new Product(103, "Apple", 30000)
-    ));
+    @Autowired
+    ProductRepo repo;
+//    List<Product> products = new ArrayList<>( Arrays.asList(
+//            new Product(101, "Samsung", 40000),
+//            new Product(102, "Oppo", 10000),
+//            new Product(103, "Apple", 30000)
+//    ));
 
     public List<Product> getProducts() {
-        return products;
+        return repo.findAll();
     }
 
     public Product getProductById(int prodId) {
-        return products.stream().filter(p -> p.getProdId() == prodId).findFirst().orElse(new Product(100, "No Item", 0));
+        return repo.findById(prodId).orElse(new Product());
     }
     public void addProduct(Product prod){
-        products.add(prod);
+        repo.save(prod);
     }
 
     public void updateProduct(Product prod){
-        for(int i =0; i< products.size(); i++){
-            if(products.get(i).getProdId() == prod.getProdId()){
-                products.set(i,prod);
-                break;
-            }
-        }
+        repo.save(prod);
     }
 
     public void deleteProduct(int prodId){
-        products.removeIf(product -> product.getProdId() == prodId);
+        repo.deleteById(prodId);
+//        products.removeIf(product -> product.getProdId() == prodId);
     }
 
 }
